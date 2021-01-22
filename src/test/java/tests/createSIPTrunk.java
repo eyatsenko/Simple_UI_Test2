@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -35,21 +36,26 @@ public class createSIPTrunk {
 
     @Before
     public void setup() {
-        System.setProperty("webdriver.chrome.driver", "C:/tools/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
         wait = new WebDriverWait(driver, 10);
     }
 
     @Test
-    public void checkSipTrunk() {
+    public void checkSipTrunk() throws InterruptedException {
         LoginPage loginPage = new LoginPage();
+        loginPage.open();
 
         // login to the instance
-        loginPage.login(login, password);
+        loginPage.getLoginField().sendKeys(login);
+        loginPage.getPasswordField().sendKeys(password);
+        loginPage.getPasswordField().sendKeys(Keys.ENTER);
+
         driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        Thread.sleep(3000);
 
         // switch to PBX module
+        driver.navigate().to(pbxUrl);
         driver.navigate().to(pbxUrl);
 
         // wait for PBX Management Sidebar and click on it

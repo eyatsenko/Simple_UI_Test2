@@ -1,7 +1,6 @@
 package pages;
 
 import driver.Driver;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -20,14 +19,16 @@ public class LoginPage {
     @FindBy(id = "loginform-password")
     private WebElement passwordField;
 
+    public WebElement getLoginField(){
+        return this.loginField;
+    }
+
+    public WebElement getPasswordField(){
+        return this.passwordField;
+    }
+
     public static LoginPage open() {
         Driver.getDriver().get(loginPageURL);
         return new LoginPage();
-    }
-
-    public void login(String login, String password) {
-        loginField.sendKeys(login);
-        passwordField.sendKeys(password);
-        passwordField.sendKeys(Keys.ENTER);
     }
 }
