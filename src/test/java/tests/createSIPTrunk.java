@@ -15,8 +15,6 @@ import pages.LoginPage;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static driver.Driver.getDriver;
-
 public class createSIPTrunk {
     private WebDriver driver;
     private WebDriverWait wait;
@@ -55,8 +53,12 @@ public class createSIPTrunk {
         Thread.sleep(3000);
 
         // switch to PBX module
-        driver.navigate().to(pbxUrl);
-        driver.navigate().to(pbxUrl);
+        driver.findElement(By.cssSelector("body > div.wrapper > div.content-wrapper > section > div > div:nth-child(4)")).click();
+        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        Thread.sleep(3000);
+
+
+        //driver.navigate().to("https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx");
 
         // wait for PBX Management Sidebar and click on it
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -96,7 +98,7 @@ public class createSIPTrunk {
 
     @After
     public void tearDown() {
-        if (getDriver() != null)
+        if (driver != null)
             driver.quit();
     }
 }
