@@ -49,16 +49,13 @@ public class createSIPTrunk {
         loginPage.getPasswordField().sendKeys(password);
         loginPage.getPasswordField().sendKeys(Keys.ENTER);
 
-        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-        Thread.sleep(3000);
+        Thread.sleep(3300);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
         // switch to PBX module
-        driver.findElement(By.cssSelector("body > div.wrapper > div.content-wrapper > section > div > div:nth-child(4)")).click();
-        driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-        Thread.sleep(3000);
-
-
-        //driver.navigate().to("https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx");
+        //driver.findElement(By.cssSelector("body > div.wrapper > div.content-wrapper > section > div > div:nth-child(4)")).click();
+        //driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        driver.navigate().to("https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx");
 
         // wait for PBX Management Sidebar and click on it
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
