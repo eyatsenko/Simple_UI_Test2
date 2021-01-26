@@ -1,16 +1,14 @@
 package tests;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.LoginPage;
+import static Driver.Driver.getDriver;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -32,30 +30,25 @@ public class createSIPTrunk {
     private String addButtonCSS = "#trunk-form > div.box-footer > button.btn.btn-success";
     private String description = "autotestdesc";
 
-    @Before
-    public void setup() {
-        driver = new ChromeDriver();
-        driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, 10);
+    @BeforeClass
+    public static void setupClass() {
+        WebDriverManager.chromedriver().setup();
+        getDriver().manage().window().maximize();
     }
 
     @Test
-    public void checkSipTrunk() throws InterruptedException {
+    public void checkSipTrunk() {
         LoginPage loginPage = new LoginPage();
-        loginPage.open();
+        LoginPage.open();
 
         // login to the instance
         loginPage.getLoginField().sendKeys(login);
         loginPage.getPasswordField().sendKeys(password);
         loginPage.getPasswordField().sendKeys(Keys.ENTER);
 
-        Thread.sleep(3300);
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
         // switch to PBX module
-        //driver.findElement(By.cssSelector("body > div.wrapper > div.content-wrapper > section > div > div:nth-child(4)")).click();
         //driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-        driver.navigate().to("https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx");
+        driver.navigate().to(pbxUrl);
 
         // wait for PBX Management Sidebar and click on it
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

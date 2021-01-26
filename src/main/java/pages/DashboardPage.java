@@ -1,6 +1,6 @@
 package pages;
 
-import driver.Driver;
+import Driver.Driver;
 import org.openqa.selenium.support.PageFactory;
 
 public class DashboardPage {
