@@ -6,6 +6,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class SipTrunksPage {
+    private String lastSipTrunkXPATH = "//table/tbody/tr[1]/td[3]/span";
 
     public SipTrunksPage() {
         PageFactory.initElements(Driver.getDriver(), this);
@@ -16,5 +17,9 @@ public class SipTrunksPage {
 
     public WebElement getAddNewSipTrunkButton(){
         return this.addNewSipTrunkButton;
+    }
+
+    public String getLastSipTrunkXPATH () {
+        return this.lastSipTrunkXPATH;
     }
 }

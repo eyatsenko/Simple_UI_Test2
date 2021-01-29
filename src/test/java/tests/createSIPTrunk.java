@@ -20,10 +20,6 @@ import java.util.concurrent.TimeUnit;
 import static driver.Driver.getDriver;
 
 public class createSIPTrunk {
-    private String login = "autotest@test.com";
-    private String password = "12345Qwerty!";
-    private String pbxUrl = "https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx";
-    private String description = "autotestdesc";
 
     @BeforeClass
     public static void setupClass() {
@@ -40,15 +36,13 @@ public class createSIPTrunk {
 
         // login to the instance
         LoginPage.open();
-        loginPage.getLoginField().sendKeys(login);
-        loginPage.getPasswordField().sendKeys(password);
+        loginPage.getLoginField().sendKeys(loginPage.getLogin());
+        loginPage.getPasswordField().sendKeys(loginPage.getPassword());
         loginPage.getPasswordField().sendKeys(Keys.ENTER);
 
         // switch to PBX module
         getDriver().manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-        new WebDriverWait(getDriver(), 15, 500)
-                .until(ExpectedConditions.titleIs("Select Component"));
-        getDriver().navigate().to(pbxUrl);
+        LoginPage.switchToPBXmodule();
 
         // wait for PBX Management Sidebar and click on it
         new WebDriverWait(getDriver(), 15, 500)
@@ -61,7 +55,7 @@ public class createSIPTrunk {
         dashboardPage.getSipTrunksMenu().click();
 
         // save the last name of sip trunk
-        String lastName = getDriver().findElement(By.xpath("//table/tbody/tr[1]/td[3]/span")).getAttribute("data-title");
+        String lastName = getDriver().findElement(By.xpath(sipTrunksPage.getLastSipTrunkXPATH())).getAttribute("data-title");
         Integer lastNameInt = Integer.parseInt(lastName);
 
         // wait for createNewTrunk button and click on it
@@ -78,26 +72,27 @@ public class createSIPTrunk {
         sipTrunksModal.getNameField().sendKeys(newNameString);
 
         // fill description
-        sipTrunksModal.getDescriptionField().sendKeys(description);
+        sipTrunksModal.getDescriptionField().sendKeys(sipTrunksModal.getDescription());
 
         // create new SIP trunk
         sipTrunksModal.getAddButton().click();
 
         //wait for spinner disappear
         new WebDriverWait(getDriver(), 10, 200)
-                .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='formLoaderContent']")));
+                .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(sipTrunksModal.getSpinnerXPATH())));
 
         // refresh the page
         getDriver().navigate().refresh();
 
         new WebDriverWait(getDriver(), 10, 500)
-                .until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("#modalPopup > div > div")));
+                .until(ExpectedConditions.invisibilityOfElementLocated(By
+                        .cssSelector(sipTrunksModal.getModalPopupCSS())));
 
         new WebDriverWait(getDriver(), 15, 500)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table/tbody/tr[1]/td[3]/span")));
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(sipTrunksPage.getLastSipTrunkXPATH())));
 
         // check that element has been created
-        WebElement createdTrunk = getDriver().findElement(By.xpath("//table/tbody/tr[1]/td[3]/span"));
+        WebElement createdTrunk = getDriver().findElement(By.xpath(sipTrunksPage.getLastSipTrunkXPATH()));
         Assert.assertEquals(newNameString, createdTrunk.getAttribute("data-title"));
         System.out.println("SIP trunk " + newNameString + " has been created");
     }
