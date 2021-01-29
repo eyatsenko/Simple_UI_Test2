@@ -1,17 +1,24 @@
 package tests;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.DashboardPage;
 import pages.LoginPage;
-import static Driver.Driver.getDriver;
+import pages.sipTrunks.SipTrunksModal;
+import pages.sipTrunks.SipTrunksPage;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static Driver.Driver.getDriver;
 
 public class createSIPTrunk {
     private WebDriver driver;
@@ -21,13 +28,8 @@ public class createSIPTrunk {
     private String login = "autotest@test.com";
     private String password = "12345Qwerty!";
     private String pbxUrl = "https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx";
-    private String pbxManagementCSS = "body > div.wrapper > aside.main-sidebar > section > ul > li:nth-child(6) > a";
-    private String sipTrunksCSS = "body > div.wrapper > aside.main-sidebar > section > ul > li.treeview.menu-opened > ul > li:nth-child(6) > a";
     private String createNewTrunkCSS = "body > div.wrapper > div.content-wrapper > section.content > div:nth-child(3) > div > div > div.box-header > div > div > div.input-group-btn > button";
     private String modalWindowCSS = "#modalPopup > div > div";
-    private String nameFieldID = "trunkform-name";
-    private String descriptionFieldID = "trunkform-description";
-    private String addButtonCSS = "#trunk-form > div.box-footer > button.btn.btn-success";
     private String description = "autotestdesc";
 
     @BeforeClass
@@ -39,57 +41,80 @@ public class createSIPTrunk {
     @Test
     public void checkSipTrunk() {
         LoginPage loginPage = new LoginPage();
-        LoginPage.open();
+        DashboardPage dashboardPage = new DashboardPage();
+        SipTrunksPage sipTrunksPage = new SipTrunksPage();
+        SipTrunksModal sipTrunksModal = new SipTrunksModal();
 
         // login to the instance
+        LoginPage.open();
         loginPage.getLoginField().sendKeys(login);
         loginPage.getPasswordField().sendKeys(password);
         loginPage.getPasswordField().sendKeys(Keys.ENTER);
 
         // switch to PBX module
-        //driver.manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
-        driver.navigate().to(pbxUrl);
+        getDriver().manage().timeouts().implicitlyWait(25, TimeUnit.SECONDS);
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.titleIs("Select Component"));
+        getDriver().navigate().to(pbxUrl);
 
         // wait for PBX Management Sidebar and click on it
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.cssSelector(pbxManagementCSS)).click();
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.elementToBeClickable(dashboardPage.getPbxManagementSection()));
+        dashboardPage.getPbxManagementSection().click();
 
-        // wait for sipTrunks  Sidebar and click on it
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.cssSelector(sipTrunksCSS)).click();
+        // wait for sipTrunks Sidebar and click on it
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.elementToBeClickable(dashboardPage.getSipTrunksMenu()));
+        dashboardPage.getSipTrunksMenu().click();
 
+        // save the last name of sip trunk
+        String lastName = getDriver().findElement(By.xpath("//table/tbody/tr[1]/td[3]/span")).getAttribute("data-title");
+        Integer lastNameInt = Integer.parseInt(lastName);
 
-        // wait for button and click on it
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.cssSelector(createNewTrunkCSS)).click();
+        // wait for createNewTrunk button and click on it
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.elementToBeClickable(sipTrunksPage.getAddNewSipTrunkButton()));
+        sipTrunksPage.getAddNewSipTrunkButton().click();
 
         // fill name field
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        Date date = new Date();
-        String name = String.valueOf(date.getTime());
-        driver.findElement(By.id(nameFieldID)).sendKeys(name);
+        //getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        StringBuilder sb = new StringBuilder();
+        Integer newNameInt = ++lastNameInt;
+        StringBuilder newName = sb.append(newNameInt.toString());
+        final String newNameString = newName.toString();
+
+        sipTrunksModal.getNameField().sendKeys(newNameString);
 
         // fill description
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.id(descriptionFieldID)).sendKeys(description);
+        sipTrunksModal.getDescriptionField().sendKeys(description);
 
         // create new SIP trunk
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.cssSelector(addButtonCSS)).click();
+        sipTrunksModal.getAddButton().click();
+
+        //wait for spinner disappear
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='formLoaderContent']")));
 
         // refresh the page
-        driver.navigate().refresh();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        getDriver().navigate().refresh();
+
+        new WebDriverWait(getDriver(), 10, 500)
+                .until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("#modalPopup > div > div")));
+
+        new WebDriverWait(getDriver(), 15, 500)
+                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table/tbody/tr[1]/td[3]/span")));
 
         // check that element has been created
-        WebElement createdTrunk = driver.findElement(By.xpath("//table/tbody/tr[1]/td[3]/span"));
-        Assert.assertEquals(createdTrunk.getAttribute("data-title"), name);
+        WebElement createdTrunk = getDriver().findElement(By.xpath("//table/tbody/tr[1]/td[3]/span"));
+        Assert.assertEquals(newNameString, createdTrunk.getAttribute("data-title"));
+        System.out.println("SIP trunk " + newNameString + " has been created");
     }
 
     @After
     public void tearDown() {
-        if (driver != null)
-            driver.quit();
+        if (getDriver() != null)
+            getDriver().quit();
     }
 }
 
