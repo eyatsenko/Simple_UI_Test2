@@ -7,7 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,15 +20,9 @@ import java.util.concurrent.TimeUnit;
 import static Driver.Driver.getDriver;
 
 public class createSIPTrunk {
-    private WebDriver driver;
-    private WebDriverWait wait;
-
-    private String signInButtonCSS = "#login-form > div.row.button-area > div.col-xs-4 > button";
     private String login = "autotest@test.com";
     private String password = "12345Qwerty!";
     private String pbxUrl = "https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx";
-    private String createNewTrunkCSS = "body > div.wrapper > div.content-wrapper > section.content > div:nth-child(3) > div > div > div.box-header > div > div > div.input-group-btn > button";
-    private String modalWindowCSS = "#modalPopup > div > div";
     private String description = "autotestdesc";
 
     @BeforeClass
@@ -77,8 +70,6 @@ public class createSIPTrunk {
         sipTrunksPage.getAddNewSipTrunkButton().click();
 
         // fill name field
-        //getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
         StringBuilder sb = new StringBuilder();
         Integer newNameInt = ++lastNameInt;
         StringBuilder newName = sb.append(newNameInt.toString());
@@ -93,7 +84,7 @@ public class createSIPTrunk {
         sipTrunksModal.getAddButton().click();
 
         //wait for spinner disappear
-        new WebDriverWait(getDriver(), 15, 500)
+        new WebDriverWait(getDriver(), 10, 200)
                 .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[@class='formLoaderContent']")));
 
         // refresh the page
