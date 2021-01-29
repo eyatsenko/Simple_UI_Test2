@@ -17,7 +17,7 @@ import pages.sipTrunks.SipTrunksPage;
 
 import java.util.concurrent.TimeUnit;
 
-import static Driver.Driver.getDriver;
+import static driver.Driver.getDriver;
 
 public class createSIPTrunk {
     private String login = "autotest@test.com";
