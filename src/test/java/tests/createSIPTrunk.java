@@ -33,6 +33,7 @@ public class createSIPTrunk {
         DashboardPage dashboardPage = new DashboardPage();
         SipTrunksPage sipTrunksPage = new SipTrunksPage();
         SipTrunksModal sipTrunksModal = new SipTrunksModal();
+        WebDriverWait wait = new WebDriverWait(getDriver(), 15);
 
         // login to the instance
         LoginPage.open();
@@ -45,13 +46,11 @@ public class createSIPTrunk {
         LoginPage.switchToPBXmodule();
 
         // wait for PBX Management Sidebar and click on it
-        new WebDriverWait(getDriver(), 15)
-                .until(ExpectedConditions.elementToBeClickable(dashboardPage.getPbxManagementSection()));
+        wait.until(ExpectedConditions.elementToBeClickable(dashboardPage.getPbxManagementSection()));
         dashboardPage.getPbxManagementSection().click();
 
         // wait for sipTrunks Sidebar and click on it
-        new WebDriverWait(getDriver(), 15)
-                .until(ExpectedConditions.elementToBeClickable(dashboardPage.getSipTrunksMenu()));
+        wait.until(ExpectedConditions.elementToBeClickable(dashboardPage.getSipTrunksMenu()));
         dashboardPage.getSipTrunksMenu().click();
 
         // save the last name of sip trunk
@@ -59,8 +58,7 @@ public class createSIPTrunk {
         Integer lastNameInt = Integer.parseInt(lastName);
 
         // wait for createNewTrunk button and click on it
-        new WebDriverWait(getDriver(), 15)
-                .until(ExpectedConditions.elementToBeClickable(sipTrunksPage.getAddNewSipTrunkButton()));
+        wait.until(ExpectedConditions.elementToBeClickable(sipTrunksPage.getAddNewSipTrunkButton()));
         sipTrunksPage.getAddNewSipTrunkButton().click();
 
         // fill name field
@@ -78,18 +76,15 @@ public class createSIPTrunk {
         sipTrunksModal.getAddButton().click();
 
         //wait for spinner disappear
-        new WebDriverWait(getDriver(), 10)
-                .until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(sipTrunksModal.getSpinnerXPATH())));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(sipTrunksModal.getSpinnerXPATH())));
 
         // refresh the page
         getDriver().navigate().refresh();
 
-        new WebDriverWait(getDriver(), 10)
-                .until(ExpectedConditions.invisibilityOfElementLocated(By
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By
                         .cssSelector(sipTrunksModal.getModalPopupCSS())));
 
-        new WebDriverWait(getDriver(), 15)
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(sipTrunksPage.getLastSipTrunkXPATH())));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(sipTrunksPage.getLastSipTrunkXPATH())));
 
         // check that element has been created
         WebElement createdTrunk = getDriver().findElement(By.xpath(sipTrunksPage.getLastSipTrunkXPATH()));
