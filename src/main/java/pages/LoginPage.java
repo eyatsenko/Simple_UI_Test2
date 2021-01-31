@@ -47,7 +47,7 @@ public class LoginPage {
         return new LoginPage();
     }
 
-    public static void switchToPBXmodule () {
+    public static void switchToPBXModule() {
         new WebDriverWait(getDriver(), 15, 500)
                 .until(ExpectedConditions.titleIs("Select Component"));
         getDriver().navigate().to("https://cp-inst266-client.phonexa.xyz/p4/?forceComponentSwitch=pbx");

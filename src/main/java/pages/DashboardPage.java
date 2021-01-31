@@ -15,7 +15,8 @@ public class DashboardPage {
     @FindBy(css = "body > div.wrapper > aside.main-sidebar > section > ul > li:nth-child(5) > a")
     private WebElement pbxManagementSection;
 
-    @FindBy(css = "body > div.wrapper > aside.main-sidebar > section > ul > li.treeview.menu-opened > ul > li:nth-child(6) > a")
+
+    @FindBy(xpath = "//a[@class = \"_menuItem__pbx_trunk\"]")
     private WebElement sipTrunksMenu;
 
     public WebElement getPbxManagementSection(){
