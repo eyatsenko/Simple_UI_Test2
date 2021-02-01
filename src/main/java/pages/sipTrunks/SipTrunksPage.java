@@ -26,8 +26,10 @@ public class SipTrunksPage {
         return this.lastSipTrunkXPATH;
     }
 
-    public String generateRandomSipTrunkName (int length, String alphabet) {
+    public String generateRandomSipTrunkName () {
+            int length = 6;
             StringBuilder sb = new StringBuilder(Math.max(length, 13));
+            String alphabet = "qwertyuiopasdfghjklzxcvbnm";
             for (int i = 0; i < length; i++) {
                 int len = alphabet.length();
                 int random = RND.nextInt(len);

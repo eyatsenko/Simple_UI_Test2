@@ -18,8 +18,6 @@ import org.apache.log4j.Logger;
 import java.util.concurrent.TimeUnit;
 import static driver.Driver.getDriver;
 
-
-
 public class createSIPTrunk {
     final Logger log = Logger.getLogger(createSIPTrunk.class);
 
@@ -67,7 +65,7 @@ public class createSIPTrunk {
         // fill name field
         wait.until(ExpectedConditions.elementToBeClickable(sipTrunksModal.getNameField()));
         log.info("'Add New' modal window is opened.");
-        final String newName = sipTrunksPage.generateRandomSipTrunkName(6, "qwertyuiopasdfghjklzxcvbnm");
+        final String newName = sipTrunksPage.generateRandomSipTrunkName();
         sipTrunksModal.getNameField().sendKeys(newName);
         log.info("Name is filled.");
 
